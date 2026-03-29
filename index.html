@@ -70,7 +70,7 @@
       <img class="logo" src="icons/icon-180.png" alt="Ícone" />
       <div>
         <h1>Dimensionamento de Fonte</h1>
-        <p>Selecione as cargas, informe a quantidade, aplique o fator e veja a fonte igual ou maior.</p>
+        <p>Selecione as cargas, informe a quantidade, aplique o fator e veja a fonte igual ou maior. As cargas são exibidas em mA para facilitar o uso no dia a dia.</p>
       </div>
     </div>
   </div>
@@ -127,7 +127,7 @@
             <tr>
               <th>Descrição</th>
               <th>Marca</th>
-              <th>Corrente unitária</th>
+              <th>Corrente unitária (mA)</th>
               <th>Quantidade</th>
               <th>Total</th>
               <th>Ação</th>
@@ -217,8 +217,8 @@
             <input id="cTensao" type="number" step="0.01" placeholder="Ex: 24" />
           </div>
           <div class="field">
-            <label for="cCorrente">Corrente (A)</label>
-            <input id="cCorrente" type="number" step="0.001" placeholder="Preencha corrente OU potência" />
+            <label for="cCorrente">Corrente (mA)</label>
+            <input id="cCorrente" type="number" step="1" placeholder="Preencha corrente em mA OU potência" />
           </div>
           <div class="field">
             <label for="cPotencia">Potência (W)</label>
@@ -241,7 +241,7 @@
                 <th>Descrição</th>
                 <th>Marca</th>
                 <th>Tensão</th>
-                <th>Corrente</th>
+                <th>Corrente (mA)</th>
                 <th>Potência</th>
                 <th>Ações</th>
               </tr>
@@ -262,7 +262,7 @@
             <input id="fMarca" type="text" placeholder="Marca da fonte" />
           </div>
           <div class="field">
-            <label for="fCorrente">Corrente (A)</label>
+            <label for="fCorrente">Corrente da fonte (A)</label>
             <input id="fCorrente" type="number" step="0.001" placeholder="Ex: 10" />
           </div>
           <div class="field">
@@ -368,6 +368,8 @@ function carregar(chave, padrao){
 function salvar(chave, valor){ localStorage.setItem(chave, JSON.stringify(valor)); }
 function num(v){ const n = parseFloat(v); return isNaN(n) ? 0 : n; }
 function fmtA(v){ return `${num(v).toFixed(3)} A`; }
+function fmtmA(v){ return `${Math.round(num(v) * 1000)} mA`; }
+function fmtCorrente(v){ return `${fmtmA(v)} (${fmtA(v)})`; }
 function msg(el, texto, ok=true){
   el.textContent = texto;
   el.style.color = ok ? "#b7ff1f" : "#ff7b7b";
@@ -387,7 +389,7 @@ function preencherSelectCargas(){
   cargas.forEach(c => {
     const op = document.createElement("option");
     op.value = c.id;
-    op.textContent = `${c.descricao} | ${c.marca} | ${fmtA(c.corrente)}`;
+    op.textContent = `${c.descricao} | ${c.marca} | ${fmtmA(c.corrente)}`;
     cargaSelect.appendChild(op);
   });
 }
@@ -401,9 +403,9 @@ function renderSelecionadas(){
     <tr>
       <td>${item.descricao}</td>
       <td>${item.marca}</td>
-      <td>${fmtA(item.corrente)}</td>
+      <td>${fmtmA(item.corrente)}</td>
       <td>${item.quantidade}</td>
-      <td>${fmtA(item.corrente * item.quantidade)}</td>
+      <td>${fmtCorrente(item.corrente * item.quantidade)}</td>
       <td><button class="btn-red" style="padding:8px 10px" onclick="removerSelecionada('${item.id}')">Remover</button></td>
     </tr>
   `).join("");
@@ -420,7 +422,7 @@ function renderCargas(){
       <td>${c.descricao}</td>
       <td>${c.marca}</td>
       <td>${c.tensao || 0} V</td>
-      <td>${fmtA(c.corrente)}</td>
+      <td>${fmtmA(c.corrente)}</td>
       <td>${num(c.potencia).toFixed(2)} W</td>
       <td>
         <div class="row-actions">
@@ -483,16 +485,16 @@ window.removerSelecionada = removerSelecionada;
 function calcularFonte(){
   const total = selecionadas.reduce((s, x) => s + (num(x.corrente) * num(x.quantidade)), 0);
   const totalFator = total * num(fator.value || 1);
-  correnteTotal.textContent = fmtA(total);
-  correnteComFator.textContent = fmtA(totalFator);
+  correnteTotal.textContent = fmtCorrente(total);
+  correnteComFator.textContent = fmtCorrente(totalFator);
 
   const ordenadas = [...fontes].sort((a,b) => num(a.corrente) - num(b.corrente));
   const recomendada = ordenadas.find(f => num(f.corrente) >= totalFator);
 
   if(recomendada){
-    fonteRecomendada.textContent = `${recomendada.descricao} (${fmtA(recomendada.corrente)})`;
+    fonteRecomendada.textContent = `${recomendada.descricao} (${fmtA(recomendada.corrente)} / ${fmtmA(recomendada.corrente)})`;
     fontesAcima.innerHTML = ordenadas.filter(f => num(f.corrente) >= totalFator)
-      .map(f => `<span class="pill">${f.descricao} • ${fmtA(f.corrente)}</span>`).join("");
+      .map(f => `<span class="pill">${f.descricao} • ${fmtA(f.corrente)} / ${fmtmA(f.corrente)}</span>`).join("");
   } else {
     fonteRecomendada.textContent = "Não encontrada";
     fontesAcima.textContent = "Nenhuma fonte cadastrada atende ao valor calculado.";
@@ -567,7 +569,7 @@ document.getElementById("btnSalvarCarga").onclick = () => {
   const descricao = document.getElementById("cDescricao").value.trim();
   const marca = document.getElementById("cMarca").value.trim();
   const tensao = num(document.getElementById("cTensao").value);
-  let corrente = num(document.getElementById("cCorrente").value);
+  let corrente = num(document.getElementById("cCorrente").value) / 1000;
   const potencia = num(document.getElementById("cPotencia").value);
 
   if(!descricao){
@@ -605,7 +607,7 @@ function editarCarga(id){
   document.getElementById("cDescricao").value = c.descricao;
   document.getElementById("cMarca").value = c.marca;
   document.getElementById("cTensao").value = c.tensao || "";
-  document.getElementById("cCorrente").value = c.corrente || "";
+  document.getElementById("cCorrente").value = c.corrente ? Math.round(c.corrente * 1000) : "";
   document.getElementById("cPotencia").value = c.potencia || "";
   document.getElementById("cIdEdit").value = c.id;
 }
