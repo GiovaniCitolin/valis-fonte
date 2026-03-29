@@ -32,7 +32,7 @@
     .field label{font-weight:700;color:#e7e7e7;font-size:15px}
     input,select{width:100%;padding:14px;border-radius:14px;border:1px solid #303030;background:#0f0f0f;color:#fff;font-size:16px;outline:none}
     input:focus,select:focus{border-color:var(--green2);box-shadow:0 0 0 3px rgba(183,255,31,.12)}
-    .actions{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+    .actions{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:16px}
     button{border:none;border-radius:14px;padding:14px 16px;font-size:16px;font-weight:700;cursor:pointer;color:#fff}
     .btn-main{background:linear-gradient(180deg,var(--green),var(--green2));color:#111}
     .btn-admin{background:linear-gradient(180deg,#2b2b2b,#191919);color:#fff;border:1px solid #3c3c3c}
@@ -61,7 +61,19 @@
     .hidden{display:none !important}
     .line{height:1px;background:#2b2b2b;margin:16px 0}
     @media (max-width:840px){.grid,.result-box,.actions{grid-template-columns:1fr}.top-inner{align-items:flex-start}.logo{width:60px;height:60px}}
-  </style>
+  
+    @media print{
+      body{background:#fff;color:#000;padding:0}
+      .top,.card{box-shadow:none;border:1px solid #ccc;background:#fff;color:#000}
+      .top p,.mini,.status{color:#333 !important}
+      button,.modal{display:none !important}
+      input,select{border:1px solid #999;color:#000;background:#fff}
+      .section-title,.top h1,th,.pill,.kpi .value{color:#000 !important}
+      .kpi,.table-wrap{border:1px solid #ccc;background:#fff}
+      .pill{border:1px solid #999;background:#f3f3f3}
+    }
+
+</style>
 </head>
 <body>
 <div class="app">
@@ -111,6 +123,8 @@
       <div class="actions">
         <button class="btn-main" id="btnAddCarga">Adicionar carga</button>
         <button class="btn-blue" id="btnCalcular">Calcular fonte</button>
+        <button class="btn-gray" id="btnLimparOperador">Limpar</button>
+        <button class="btn-blue" id="btnSalvarPdf">Salvar em PDF</button>
         <button class="btn-admin" id="btnAdmin">Área administrativa</button>
       </div>
 
@@ -192,6 +206,9 @@
     <div class="modal-head">
       <strong>Área administrativa</strong>
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn-blue" id="btnExportarBackup">Exportar backup</button>
+        <button class="btn-gray" id="btnImportarBackup">Importar backup</button>
+        <input type="file" id="inputBackup" accept=".json,application/json" class="hidden">
         <button class="btn-gray" id="btnTrocarSenha">Alterar senha</button>
         <button class="btn-red" id="btnSairAdmin">Sair do admin</button>
       </div>
@@ -357,6 +374,84 @@ const modalSenha = document.getElementById("modalSenha");
 const modalAdmin = document.getElementById("modalAdmin");
 const modalTrocarSenha = document.getElementById("modalTrocarSenha");
 
+
+function exportarBackup(){
+  const payload = {
+    app: "Dimensionamento de Fonte",
+    versao: 2,
+    exportadoEm: new Date().toISOString(),
+    cargas,
+    fontes,
+    senhaAdmin
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "backup_dimensionamento_fonte.json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+  msg(status, "Backup exportado com sucesso.");
+}
+
+async function importarBackupArquivo(event){
+  const arquivo = event.target.files && event.target.files[0];
+  if(!arquivo) return;
+  try{
+    const texto = await arquivo.text();
+    const payload = JSON.parse(texto);
+    if(!payload || !Array.isArray(payload.cargas) || !Array.isArray(payload.fontes)){
+      throw new Error("Formato inválido");
+    }
+    const substituir = confirm("Deseja substituir os dados atuais pelo backup importado?\n\nOK = substituir tudo\nCancelar = mesclar com os dados atuais");
+    if(substituir){
+      cargas = payload.cargas || [];
+      fontes = payload.fontes || [];
+      if(payload.senhaAdmin) senhaAdmin = payload.senhaAdmin;
+    } else {
+      const mapaCargas = new Map(cargas.map(x => [x.id || `${x.descricao}_${x.marca}`, x]));
+      (payload.cargas || []).forEach(x => mapaCargas.set(x.id || `${x.descricao}_${x.marca}`, x));
+      cargas = Array.from(mapaCargas.values());
+
+      const mapaFontes = new Map(fontes.map(x => [x.id || `${x.descricao}_${x.marca}_${x.corrente}`, x]));
+      (payload.fontes || []).forEach(x => mapaFontes.set(x.id || `${x.descricao}_${x.marca}_${x.corrente}`, x));
+      fontes = Array.from(mapaFontes.values());
+      if(payload.senhaAdmin) senhaAdmin = payload.senhaAdmin;
+    }
+    salvar(K_CARGAS, cargas);
+    salvar(K_FONTES, fontes);
+    localStorage.setItem(K_SENHA, senhaAdmin);
+    preencherSelectCargas();
+    renderCargas();
+    renderFontes();
+    msg(status, "Backup importado com sucesso.");
+  } catch(e){
+    msg(status, "Não foi possível importar o backup.", false);
+  } finally {
+    event.target.value = "";
+  }
+}
+
+function limparOperador(){
+  document.getElementById("operador").value = "";
+  document.getElementById("quantidade").value = "1";
+  document.getElementById("fator").value = "1.20";
+  selecionadas = [];
+  salvar(K_SELECIONADAS, selecionadas);
+  renderSelecionadas();
+  correnteTotal.textContent = "0 A";
+  correnteComFator.textContent = "0 A";
+  fonteRecomendada.textContent = "—";
+  fontesAcima.textContent = "Nenhum cálculo realizado.";
+  msg(status, "Tela do operador limpa.");
+}
+
+function salvarTelaEmPDF(){
+  window.print();
+}
+
 function carregar(chave, padrao){
   try{
     const d = localStorage.getItem(chave);
@@ -508,6 +603,11 @@ function fecharSenha(){ modalSenha.classList.remove("show"); }
 function fecharAdmin(){ modalAdmin.classList.remove("show"); }
 
 document.getElementById("btnAdmin").onclick = () => adminLogado ? modalAdmin.classList.add("show") : abrirSenha();
+document.getElementById("btnLimparOperador").onclick = limparOperador;
+document.getElementById("btnSalvarPdf").onclick = salvarTelaEmPDF;
+document.getElementById("btnExportarBackup").onclick = exportarBackup;
+document.getElementById("btnImportarBackup").onclick = () => document.getElementById("inputBackup").click();
+document.getElementById("inputBackup").addEventListener("change", importarBackupArquivo);
 document.getElementById("btnFecharSenha").onclick = fecharSenha;
 document.getElementById("btnCancelarSenha").onclick = fecharSenha;
 document.getElementById("btnEntrarAdmin").onclick = () => {
