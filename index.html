@@ -6,405 +6,678 @@
   <meta name="theme-color" content="#0b0b0b" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Fonte App" />
+  <meta name="apple-mobile-web-app-title" content="Fonte Valis" />
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
-  <title>Dimensionador de Fonte</title>
+  <title>Dimensionamento de Fonte</title>
   <style>
     :root{
-      --bg:#0d0f12;--card:#15191f;--card2:#1a1f27;--text:#f5f7fa;--muted:#a9b2be;
-      --line:#2b3340;--accent:#b8ff2c;--danger:#ef4444;--blue:#2563eb;--shadow:0 14px 30px rgba(0,0,0,.28);
+      --bg:#0b0b0b; --card:#141414; --card2:#1b1b1b; --line:#2b2b2b; --text:#f5f5f5;
+      --muted:#a7a7a7; --green:#b7ff1f; --green2:#8ed600; --blue:#2563eb; --red:#dc2626;
+      --gray:#6b7280; --shadow:0 10px 28px rgba(0,0,0,.28); --radius:18px;
     }
-    *{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#090b0e,#11161c);color:var(--text);padding:18px}
-    .app{max-width:1100px;margin:0 auto}.hero,.card{background:var(--card);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);margin-bottom:18px;overflow:hidden}
-    .hero-top{display:flex;align-items:center;gap:16px;padding:18px}.hero-top img{width:74px;height:74px;border-radius:18px;border:2px solid rgba(184,255,44,.35)}
-    .hero-title h1{margin:0;font-size:clamp(24px,4vw,42px)} .hero-title p{margin:6px 0 0;color:var(--muted)}
-    .hero-actions,.buttons{display:flex;gap:12px;flex-wrap:wrap}.hero-actions{padding:0 18px 18px}
-    .content{padding:18px}.section-title{margin:0 0 16px;color:var(--accent);font-size:26px}.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
-    .field{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}.field label{color:var(--muted);font-weight:700;font-size:14px}
-    .field input,.field select{width:100%;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--card2);color:var(--text);font-size:16px}
-    .row,.summary{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    button{border:none;border-radius:14px;padding:13px 16px;font-size:15px;font-weight:700;cursor:pointer;transition:.16s ease;color:#0b0b0b;background:var(--accent)}
-    .btn-secondary{background:#e5e7eb;color:#111827}.btn-dark{background:#29303b;color:#f8fafc}.btn-blue{background:var(--blue);color:#fff}.btn-danger{background:var(--danger);color:#fff}
-    .btn-outline{background:transparent;color:var(--accent);border:1px solid rgba(184,255,44,.45)} .factor-buttons button.active{outline:2px solid #fff}
-    .list{display:flex;flex-direction:column;gap:10px;max-height:420px;overflow:auto}.item{border:1px solid var(--line);background:var(--card2);border-radius:16px;padding:14px}
-    .item-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.item h3{margin:0 0 5px;font-size:17px}.item p{margin:0;color:var(--muted);font-size:13px;line-height:1.4}
-    .item-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.item-actions input{width:86px;padding:10px;border-radius:10px;border:1px solid var(--line);background:#11161c;color:#fff}
-    .summary-box,.result-main{border:1px solid var(--line);border-radius:18px;padding:16px}.summary-box{background:var(--card2)} .summary-box .label{color:var(--muted);font-size:13px;font-weight:700;margin-bottom:8px}
-    .summary-box .value{font-size:28px;font-weight:800}.result-main{text-align:center;background:linear-gradient(180deg,#192110,#121912);margin-top:14px;border-color:rgba(184,255,44,.35)}
-    .result-main .small{color:#d3f5a1;font-weight:700;font-size:14px}.result-main .big{font-size:42px;font-weight:900;margin:8px 0 4px;color:var(--accent)}
-    .tag{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700;background:#232a34;color:#dce4ef}.status{min-height:22px;margin-top:10px;font-weight:700;color:var(--accent)}
-    .muted{color:var(--muted)} .modal{position:fixed;inset:0;background:rgba(0,0,0,.66);display:none;align-items:center;justify-content:center;padding:14px;z-index:2000}
-    .modal.show{display:flex}.modal-card{width:min(980px,100%);max-height:92vh;overflow:auto;background:#11161c;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow)}
-    .modal-head{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;background:#11161c;border-bottom:1px solid var(--line);position:sticky;top:0}
-    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.tabs button.active{background:var(--accent);color:#111}.hidden{display:none !important}.footer-note{font-size:13px;color:var(--muted);line-height:1.45}
-    @media (max-width:860px){body{padding:12px}.grid,.row,.summary{grid-template-columns:1fr}button{width:100%}.buttons,.hero-actions{display:grid;grid-template-columns:1fr}}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#050505 0%, #111 100%);color:var(--text);padding:16px}
+    .app{max-width:980px;margin:0 auto}
+    .top{background:var(--card);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px}
+    .top-inner{display:flex;align-items:center;gap:16px;padding:18px;background:linear-gradient(180deg,#101010,#181818)}
+    .logo{width:72px;height:72px;border-radius:18px;object-fit:cover;border:2px solid rgba(183,255,31,.5);flex:0 0 auto}
+    .top h1{margin:0;font-size:clamp(26px,4vw,40px);color:var(--green)}
+    .top p{margin:6px 0 0;color:var(--muted);font-size:15px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden}
+    .content{padding:18px}
+    .section-title{margin:0 0 16px;color:var(--green);font-size:26px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .field{display:flex;flex-direction:column;gap:7px}
+    .field label{font-weight:700;color:#e7e7e7;font-size:15px}
+    input,select{width:100%;padding:14px;border-radius:14px;border:1px solid #303030;background:#0f0f0f;color:#fff;font-size:16px;outline:none}
+    input:focus,select:focus{border-color:var(--green2);box-shadow:0 0 0 3px rgba(183,255,31,.12)}
+    .actions{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+    button{border:none;border-radius:14px;padding:14px 16px;font-size:16px;font-weight:700;cursor:pointer;color:#fff}
+    .btn-main{background:linear-gradient(180deg,var(--green),var(--green2));color:#111}
+    .btn-admin{background:linear-gradient(180deg,#2b2b2b,#191919);color:#fff;border:1px solid #3c3c3c}
+    .btn-blue{background:linear-gradient(180deg,#2a69c7,#1d4f9f)}
+    .btn-red{background:linear-gradient(180deg,#dd4d43,#ba332b)}
+    .btn-gray{background:linear-gradient(180deg,#8a8f99,#68707e)}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:18px;background:var(--card2)}
+    table{width:100%;border-collapse:collapse;min-width:760px}
+    th,td{border-bottom:1px solid #2b2b2b;padding:12px 10px;text-align:left;font-size:14px}
+    th{color:var(--green);background:#171717}
+    tr:last-child td{border-bottom:none}
+    .mini{font-size:13px;color:var(--muted)}
+    .pill{display:inline-block;border-radius:999px;padding:7px 11px;font-size:13px;font-weight:700;background:#1f2910;color:var(--green);border:1px solid rgba(183,255,31,.28);margin:4px}
+    .result-box{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .kpi{background:#101010;border:1px solid #2c2c2c;border-radius:18px;padding:16px}
+    .kpi .label{color:var(--muted);font-size:13px;margin-bottom:6px;font-weight:700}
+    .kpi .value{font-size:29px;font-weight:800;color:var(--green);word-break:break-word}
+    .status{min-height:22px;margin-top:10px;font-weight:700;color:var(--green)}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;padding:14px;z-index:999}
+    .modal.show{display:flex}
+    .modal-card{width:min(980px,100%);max-height:92vh;overflow:auto;background:#121212;border:1px solid #2c2c2c;border-radius:24px;box-shadow:var(--shadow)}
+    .modal-head{position:sticky;top:0;background:#151515;border-bottom:1px solid #2b2b2b;padding:16px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .tabs{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+    .tab-btn{background:#1b1b1b;color:#fff;border:1px solid #2f2f2f}
+    .tab-btn.active{background:linear-gradient(180deg,var(--green),var(--green2));color:#111}
+    .hidden{display:none !important}
+    .line{height:1px;background:#2b2b2b;margin:16px 0}
+    @media (max-width:840px){.grid,.result-box,.actions{grid-template-columns:1fr}.top-inner{align-items:flex-start}.logo{width:60px;height:60px}}
   </style>
 </head>
 <body>
-  <div class="app">
-    <section class="hero">
-      <div class="hero-top">
-        <img src="icons/icon-180.png" alt="Ícone do app">
-        <div class="hero-title">
-          <h1>Dimensionador de Fonte</h1>
-          <p>Selecione as cargas, aplique o fator de segurança e o app sugere a fonte igual ou maior.</p>
-        </div>
-      </div>
-      <div class="hero-actions">
-        <button class="btn-dark" id="btnAbrirAdmin">Área administrativa</button>
-        <button class="btn-outline" id="btnExportarBackup">Exportar backup</button>
-        <button class="btn-blue" id="btnImportarBackup">Importar backup</button>
-        <input type="file" id="inputBackup" accept=".json,application/json" class="hidden">
-      </div>
-    </section>
-
-    <div class="grid">
-      <section class="card"><div class="content">
-        <h2 class="section-title">Cálculo da Fonte</h2>
-        <div class="field"><label for="operador">Operador</label><input type="text" id="operador" placeholder="Nome do operador"></div>
-        <div class="field"><label for="cargaSelect">Selecionar carga cadastrada</label><select id="cargaSelect"></select></div>
-        <div class="row">
-          <div class="field"><label for="quantidadeCarga">Quantidade</label><input type="number" id="quantidadeCarga" min="1" step="1" value="1"></div>
-          <div class="field"><label>&nbsp;</label><button id="btnAdicionarCarga">Adicionar carga</button></div>
-        </div>
-        <div class="field"><label>Fator de segurança</label>
-          <div class="buttons factor-buttons" id="factorButtons">
-            <button type="button" data-factor="1.05">5%</button><button type="button" data-factor="1.10">10%</button><button type="button" data-factor="1.20" class="active">20%</button><button type="button" data-factor="1.30">30%</button><button type="button" data-factor="2.00">2.0</button>
-          </div>
-        </div>
-        <div class="field"><label for="fatorCustom">Fator manual (ex.: 1.15 ou 2.00)</label><input type="number" id="fatorCustom" step="0.01" placeholder="Opcional"></div>
-        <div class="buttons"><button id="btnCalcular">Calcular fonte</button><button class="btn-secondary" id="btnLimparSelecao">Limpar seleção</button></div>
-        <div class="status" id="statusCalc"></div>
-        <div class="summary">
-          <div class="summary-box"><div class="label">Corrente total</div><div class="value" id="correnteTotal">0,00 A</div></div>
-          <div class="summary-box"><div class="label">Corrente com fator</div><div class="value" id="correnteFator">0,00 A</div></div>
-        </div>
-        <div class="result-main"><div class="small">Fonte recomendada</div><div class="big" id="fonteRecomendada">—</div><div id="detalheFonte" class="muted">Nenhum cálculo realizado.</div></div>
-      </div></section>
-
-      <section class="card"><div class="content">
-        <h2 class="section-title">Cargas selecionadas</h2>
-        <div class="list" id="listaSelecionadas"></div>
-        <p class="footer-note">Informe a quantidade de cada carga e clique em <strong>Calcular fonte</strong>. O app compara o valor final com as fontes cadastradas e indica a fonte igual ou maior.</p>
-      </div></section>
-    </div>
-  </div>
-
-  <div class="modal" id="modalSenha">
-    <div class="modal-card">
-      <div class="modal-head"><h3>Área administrativa</h3><button class="btn-danger" id="btnFecharSenha">Fechar</button></div>
-      <div style="padding:18px;">
-        <div class="field"><label for="senhaAdmin">Digite a senha</label><input type="password" id="senhaAdmin" placeholder="Senha administrativa"></div>
-        <div class="buttons"><button id="btnEntrarAdmin">Entrar</button></div>
-        <div class="status" id="statusSenha"></div>
+<div class="app">
+  <div class="top">
+    <div class="top-inner">
+      <img class="logo" src="icons/icon-180.png" alt="Ícone" />
+      <div>
+        <h1>Dimensionamento de Fonte</h1>
+        <p>Selecione as cargas, informe a quantidade, aplique o fator e veja a fonte igual ou maior.</p>
       </div>
     </div>
   </div>
 
-  <div class="modal" id="modalAdmin">
-    <div class="modal-card">
-      <div class="modal-head"><h3>Área administrativa</h3><button class="btn-danger" id="btnFecharAdmin">Sair do modo admin</button></div>
-      <div style="padding:18px;">
-        <div class="tabs">
-          <button class="active" data-tab="tabCargas">Cadastro de cargas</button>
-          <button class="btn-dark" data-tab="tabFontes">Cadastro de fontes</button>
-          <button class="btn-dark" data-tab="tabSenha">Configurações</button>
+  <div class="card">
+    <div class="content">
+      <h2 class="section-title">Cálculo</h2>
+      <div class="grid">
+        <div class="field">
+          <label for="operador">Operador</label>
+          <input id="operador" type="text" placeholder="Nome do operador" />
         </div>
+        <div class="field">
+          <label for="fator">Fator de segurança</label>
+          <select id="fator">
+            <option value="1.05">5%</option>
+            <option value="1.10">10%</option>
+            <option value="1.20">20%</option>
+            <option value="1.30">30%</option>
+            <option value="2.0">2.0</option>
+          </select>
+        </div>
+      </div>
 
-        <section id="tabCargas">
-          <div class="row">
-            <div class="field"><label for="cargaDescricao">Descrição</label><input type="text" id="cargaDescricao" placeholder="Ex.: CLP, sensor, câmera..."></div>
-            <div class="field"><label for="cargaMarca">Marca</label><input type="text" id="cargaMarca" placeholder="Marca"></div>
-          </div>
-          <div class="row">
-            <div class="field"><label for="cargaTensao">Tensão (V)</label><input type="number" id="cargaTensao" step="0.01" placeholder="Ex.: 24"></div>
-            <div class="field"><label for="cargaCorrente">Corrente (A)</label><input type="number" id="cargaCorrente" step="0.001" placeholder="Preencha se já souber"></div>
-          </div>
-          <div class="field"><label for="cargaPotencia">Potência (W)</label><input type="number" id="cargaPotencia" step="0.01" placeholder="Se preencher potência, o app calcula a corrente"></div>
-          <div class="buttons"><button id="btnSalvarCarga">Salvar carga</button><button class="btn-secondary" id="btnLimparCarga">Limpar</button></div>
-          <div class="status" id="statusCarga"></div><div class="list" id="listaCargasAdmin"></div>
-        </section>
+      <div class="line"></div>
 
-        <section id="tabFontes" class="hidden">
-          <div class="row">
-            <div class="field"><label for="fonteDescricao">Descrição</label><input type="text" id="fonteDescricao" placeholder="Ex.: Fonte chaveada 24V"></div>
-            <div class="field"><label for="fonteMarca">Marca</label><input type="text" id="fonteMarca" placeholder="Marca"></div>
-          </div>
-          <div class="field"><label for="fonteCorrente">Corrente da fonte (A)</label><input type="number" id="fonteCorrente" step="0.01" placeholder="Ex.: 10"></div>
-          <div class="buttons"><button id="btnSalvarFonte">Salvar fonte</button><button class="btn-secondary" id="btnLimparFonte">Limpar</button></div>
-          <div class="status" id="statusFonte"></div><div class="list" id="listaFontesAdmin"></div>
-        </section>
+      <div class="grid">
+        <div class="field">
+          <label for="cargaSelect">Selecionar carga</label>
+          <select id="cargaSelect"></select>
+        </div>
+        <div class="field">
+          <label for="quantidade">Quantidade</label>
+          <input id="quantidade" type="number" min="1" step="1" value="1" />
+        </div>
+      </div>
 
-        <section id="tabSenha" class="hidden">
-          <div class="field"><label for="senhaAtual">Senha atual</label><input type="password" id="senhaAtual" placeholder="Senha atual"></div>
-          <div class="field"><label for="novaSenha">Nova senha</label><input type="password" id="novaSenha" placeholder="Nova senha"></div>
-          <div class="buttons"><button id="btnAlterarSenha">Alterar senha</button></div>
-          <div class="status" id="statusConfig"></div>
-          <p class="footer-note">Senha padrão inicial: <strong>1234</strong>. Altere após o primeiro acesso.</p>
-        </section>
+      <div class="actions">
+        <button class="btn-main" id="btnAddCarga">Adicionar carga</button>
+        <button class="btn-blue" id="btnCalcular">Calcular fonte</button>
+        <button class="btn-admin" id="btnAdmin">Área administrativa</button>
+      </div>
+
+      <div id="status" class="status"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="content">
+      <h2 class="section-title">Cargas selecionadas</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Descrição</th>
+              <th>Marca</th>
+              <th>Corrente unitária</th>
+              <th>Quantidade</th>
+              <th>Total</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaSelecionadas"></tbody>
+        </table>
       </div>
     </div>
   </div>
 
-  <script>
-    const STORAGE_KEY = "fonte_app_v1";
-    const BACKUP_KEY = STORAGE_KEY + "_backup_auto";
-    const LAST_BACKUP_KEY = STORAGE_KEY + "_ultimo_backup";
+  <div class="card">
+    <div class="content">
+      <h2 class="section-title">Resultado</h2>
+      <div class="result-box">
+        <div class="kpi">
+          <div class="label">Corrente total</div>
+          <div class="value" id="correnteTotal">0 A</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Corrente com fator</div>
+          <div class="value" id="correnteComFator">0 A</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Fonte recomendada</div>
+          <div class="value" id="fonteRecomendada">—</div>
+        </div>
+      </div>
 
-    let state = carregarState();
-    let selectedLoads = [];
-    let editingCargaId = null;
-    let editingFonteId = null;
-    let activeFactor = 1.20;
+      <div class="line"></div>
 
-    const refs = {
-      cargaSelect: document.getElementById("cargaSelect"),
-      quantidadeCarga: document.getElementById("quantidadeCarga"),
-      listaSelecionadas: document.getElementById("listaSelecionadas"),
-      correnteTotal: document.getElementById("correnteTotal"),
-      correnteFator: document.getElementById("correnteFator"),
-      fonteRecomendada: document.getElementById("fonteRecomendada"),
-      detalheFonte: document.getElementById("detalheFonte"),
-      statusCalc: document.getElementById("statusCalc"),
-      fatorCustom: document.getElementById("fatorCustom"),
-      modalSenha: document.getElementById("modalSenha"),
-      modalAdmin: document.getElementById("modalAdmin"),
-      senhaAdmin: document.getElementById("senhaAdmin"),
-      statusSenha: document.getElementById("statusSenha"),
-      listaCargasAdmin: document.getElementById("listaCargasAdmin"),
-      listaFontesAdmin: document.getElementById("listaFontesAdmin"),
-      statusCarga: document.getElementById("statusCarga"),
-      statusFonte: document.getElementById("statusFonte"),
-      statusConfig: document.getElementById("statusConfig"),
-      cargaDescricao: document.getElementById("cargaDescricao"),
-      cargaMarca: document.getElementById("cargaMarca"),
-      cargaTensao: document.getElementById("cargaTensao"),
-      cargaCorrente: document.getElementById("cargaCorrente"),
-      cargaPotencia: document.getElementById("cargaPotencia"),
-      fonteDescricao: document.getElementById("fonteDescricao"),
-      fonteMarca: document.getElementById("fonteMarca"),
-      fonteCorrente: document.getElementById("fonteCorrente"),
-      senhaAtual: document.getElementById("senhaAtual"),
-      novaSenha: document.getElementById("novaSenha"),
-      inputBackup: document.getElementById("inputBackup")
-    };
+      <div class="field">
+        <label>Outras fontes acima do mínimo</label>
+        <div id="fontesAcima" class="mini">Nenhum cálculo realizado.</div>
+      </div>
+    </div>
+  </div>
+</div>
 
-    function iniciar(){
-      garantirDefaults(); preencherSelectCargas(); renderSelectedLoads(); renderAdminLoads(); renderAdminSources(); bind(); atualizarResumo(0,0,null);
+<div class="modal" id="modalSenha">
+  <div class="modal-card" style="max-width:420px">
+    <div class="modal-head">
+      <strong>Área administrativa</strong>
+      <button class="btn-gray" id="btnFecharSenha">Fechar</button>
+    </div>
+    <div class="content">
+      <div class="field">
+        <label for="senhaAdmin">Senha</label>
+        <input id="senhaAdmin" type="password" placeholder="Digite a senha" />
+      </div>
+      <div class="actions" style="grid-template-columns:1fr 1fr;">
+        <button class="btn-main" id="btnEntrarAdmin">Entrar</button>
+        <button class="btn-gray" id="btnCancelarSenha">Cancelar</button>
+      </div>
+      <div id="statusSenha" class="status"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modalAdmin">
+  <div class="modal-card">
+    <div class="modal-head">
+      <strong>Área administrativa</strong>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn-gray" id="btnTrocarSenha">Alterar senha</button>
+        <button class="btn-red" id="btnSairAdmin">Sair do admin</button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="tabs">
+        <button class="tab-btn active" id="tabCargas">Cadastro de cargas</button>
+        <button class="tab-btn" id="tabFontes">Cadastro de fontes</button>
+      </div>
+
+      <div id="painelCargas">
+        <div class="grid">
+          <div class="field">
+            <label for="cDescricao">Descrição</label>
+            <input id="cDescricao" type="text" placeholder="Ex: CLP, sensor, IHM" />
+          </div>
+          <div class="field">
+            <label for="cMarca">Marca</label>
+            <input id="cMarca" type="text" placeholder="Marca da carga" />
+          </div>
+          <div class="field">
+            <label for="cTensao">Tensão (V)</label>
+            <input id="cTensao" type="number" step="0.01" placeholder="Ex: 24" />
+          </div>
+          <div class="field">
+            <label for="cCorrente">Corrente (A)</label>
+            <input id="cCorrente" type="number" step="0.001" placeholder="Preencha corrente OU potência" />
+          </div>
+          <div class="field">
+            <label for="cPotencia">Potência (W)</label>
+            <input id="cPotencia" type="number" step="0.01" placeholder="Se preencher, o app calcula a corrente" />
+          </div>
+          <div class="field">
+            <label for="cIdEdit">Registro</label>
+            <input id="cIdEdit" type="text" readonly placeholder="Novo cadastro" />
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn-main" id="btnSalvarCarga">Salvar carga</button>
+          <button class="btn-gray" id="btnLimparCarga">Limpar</button>
+        </div>
+        <div class="line"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Descrição</th>
+                <th>Marca</th>
+                <th>Tensão</th>
+                <th>Corrente</th>
+                <th>Potência</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tabelaCargas"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="painelFontes" class="hidden">
+        <div class="grid">
+          <div class="field">
+            <label for="fDescricao">Descrição</label>
+            <input id="fDescricao" type="text" placeholder="Ex: Fonte 24V 10A" />
+          </div>
+          <div class="field">
+            <label for="fMarca">Marca</label>
+            <input id="fMarca" type="text" placeholder="Marca da fonte" />
+          </div>
+          <div class="field">
+            <label for="fCorrente">Corrente (A)</label>
+            <input id="fCorrente" type="number" step="0.001" placeholder="Ex: 10" />
+          </div>
+          <div class="field">
+            <label for="fIdEdit">Registro</label>
+            <input id="fIdEdit" type="text" readonly placeholder="Novo cadastro" />
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn-main" id="btnSalvarFonte">Salvar fonte</button>
+          <button class="btn-gray" id="btnLimparFonte">Limpar</button>
+        </div>
+        <div class="line"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Descrição</th>
+                <th>Marca</th>
+                <th>Corrente</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tabelaFontes"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="line"></div>
+      <div class="mini">Senha padrão da área administrativa: 1234. Você pode alterá-la depois.</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modalTrocarSenha">
+  <div class="modal-card" style="max-width:460px">
+    <div class="modal-head">
+      <strong>Alterar senha</strong>
+      <button class="btn-gray" id="btnFecharTrocarSenha">Fechar</button>
+    </div>
+    <div class="content">
+      <div class="field">
+        <label for="senhaAtual">Senha atual</label>
+        <input id="senhaAtual" type="password" />
+      </div>
+      <div class="field">
+        <label for="novaSenha">Nova senha</label>
+        <input id="novaSenha" type="password" />
+      </div>
+      <div class="actions" style="grid-template-columns:1fr 1fr;">
+        <button class="btn-main" id="btnSalvarNovaSenha">Salvar nova senha</button>
+        <button class="btn-gray" id="btnCancelarNovaSenha">Cancelar</button>
+      </div>
+      <div id="statusTrocaSenha" class="status"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const K_CARGAS = "fonte_app_cargas_v1";
+const K_FONTES = "fonte_app_fontes_v1";
+const K_SENHA = "fonte_app_senha_v1";
+const K_SELECIONADAS = "fonte_app_sel_v1";
+
+let cargas = carregar(K_CARGAS, [
+  {id: crypto.randomUUID(), descricao:"CLP", marca:"Genérica", tensao:24, corrente:1.2, potencia:0},
+  {id: crypto.randomUUID(), descricao:"IHM", marca:"Genérica", tensao:24, corrente:1.0, potencia:0},
+  {id: crypto.randomUUID(), descricao:"Sensor", marca:"Genérica", tensao:24, corrente:0.08, potencia:0}
+]);
+
+let fontes = carregar(K_FONTES, [
+  {id: crypto.randomUUID(), descricao:"Fonte 24V 5A", marca:"Genérica", corrente:5},
+  {id: crypto.randomUUID(), descricao:"Fonte 24V 10A", marca:"Genérica", corrente:10},
+  {id: crypto.randomUUID(), descricao:"Fonte 24V 20A", marca:"Genérica", corrente:20}
+]);
+
+let selecionadas = carregar(K_SELECIONADAS, []);
+let senhaAdmin = localStorage.getItem(K_SENHA) || "1234";
+let adminLogado = false;
+
+const operador = document.getElementById("operador");
+const fator = document.getElementById("fator");
+const cargaSelect = document.getElementById("cargaSelect");
+const quantidade = document.getElementById("quantidade");
+const tabelaSelecionadas = document.getElementById("tabelaSelecionadas");
+const correnteTotal = document.getElementById("correnteTotal");
+const correnteComFator = document.getElementById("correnteComFator");
+const fonteRecomendada = document.getElementById("fonteRecomendada");
+const fontesAcima = document.getElementById("fontesAcima");
+const status = document.getElementById("status");
+
+const modalSenha = document.getElementById("modalSenha");
+const modalAdmin = document.getElementById("modalAdmin");
+const modalTrocarSenha = document.getElementById("modalTrocarSenha");
+
+function carregar(chave, padrao){
+  try{
+    const d = localStorage.getItem(chave);
+    return d ? JSON.parse(d) : padrao;
+  }catch(e){
+    return padrao;
+  }
+}
+function salvar(chave, valor){ localStorage.setItem(chave, JSON.stringify(valor)); }
+function num(v){ const n = parseFloat(v); return isNaN(n) ? 0 : n; }
+function fmtA(v){ return `${num(v).toFixed(3)} A`; }
+function msg(el, texto, ok=true){
+  el.textContent = texto;
+  el.style.color = ok ? "#b7ff1f" : "#ff7b7b";
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.textContent = "", 3000);
+}
+
+function preencherSelectCargas(){
+  cargaSelect.innerHTML = "";
+  if(!cargas.length){
+    const op = document.createElement("option");
+    op.value = "";
+    op.textContent = "Nenhuma carga cadastrada";
+    cargaSelect.appendChild(op);
+    return;
+  }
+  cargas.forEach(c => {
+    const op = document.createElement("option");
+    op.value = c.id;
+    op.textContent = `${c.descricao} | ${c.marca} | ${fmtA(c.corrente)}`;
+    cargaSelect.appendChild(op);
+  });
+}
+
+function renderSelecionadas(){
+  if(!selecionadas.length){
+    tabelaSelecionadas.innerHTML = '<tr><td colspan="6" class="empty">Nenhuma carga adicionada.</td></tr>';
+    return;
+  }
+  tabelaSelecionadas.innerHTML = selecionadas.map(item => `
+    <tr>
+      <td>${item.descricao}</td>
+      <td>${item.marca}</td>
+      <td>${fmtA(item.corrente)}</td>
+      <td>${item.quantidade}</td>
+      <td>${fmtA(item.corrente * item.quantidade)}</td>
+      <td><button class="btn-red" style="padding:8px 10px" onclick="removerSelecionada('${item.id}')">Remover</button></td>
+    </tr>
+  `).join("");
+}
+
+function renderCargas(){
+  const tbody = document.getElementById("tabelaCargas");
+  if(!cargas.length){
+    tbody.innerHTML = '<tr><td colspan="6" class="empty">Nenhuma carga cadastrada.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = cargas.map(c => `
+    <tr>
+      <td>${c.descricao}</td>
+      <td>${c.marca}</td>
+      <td>${c.tensao || 0} V</td>
+      <td>${fmtA(c.corrente)}</td>
+      <td>${num(c.potencia).toFixed(2)} W</td>
+      <td>
+        <div class="row-actions">
+          <button class="btn-blue" onclick="editarCarga('${c.id}')">Editar</button>
+          <button class="btn-red" onclick="excluirCarga('${c.id}')">Excluir</button>
+        </div>
+      </td>
+    </tr>
+  `).join("");
+}
+
+function renderFontes(){
+  const tbody = document.getElementById("tabelaFontes");
+  if(!fontes.length){
+    tbody.innerHTML = '<tr><td colspan="4" class="empty">Nenhuma fonte cadastrada.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = fontes.map(f => `
+    <tr>
+      <td>${f.descricao}</td>
+      <td>${f.marca}</td>
+      <td>${fmtA(f.corrente)}</td>
+      <td>
+        <div class="row-actions">
+          <button class="btn-blue" onclick="editarFonte('${f.id}')">Editar</button>
+          <button class="btn-red" onclick="excluirFonte('${f.id}')">Excluir</button>
+        </div>
+      </td>
+    </tr>
+  `).join("");
+}
+
+function adicionarCargaSelecionada(){
+  if(!cargaSelect.value){
+    msg(status, "Cadastre uma carga primeiro.", false);
+    return;
+  }
+  const carga = cargas.find(c => c.id === cargaSelect.value);
+  const qtd = Math.max(1, parseInt(quantidade.value || "1"));
+  selecionadas.push({
+    id: crypto.randomUUID(),
+    cargaId: carga.id,
+    descricao: carga.descricao,
+    marca: carga.marca,
+    corrente: num(carga.corrente),
+    quantidade: qtd
+  });
+  salvar(K_SELECIONADAS, selecionadas);
+  renderSelecionadas();
+  msg(status, "Carga adicionada com sucesso.");
+}
+
+function removerSelecionada(id){
+  selecionadas = selecionadas.filter(x => x.id !== id);
+  salvar(K_SELECIONADAS, selecionadas);
+  renderSelecionadas();
+}
+window.removerSelecionada = removerSelecionada;
+
+function calcularFonte(){
+  const total = selecionadas.reduce((s, x) => s + (num(x.corrente) * num(x.quantidade)), 0);
+  const totalFator = total * num(fator.value || 1);
+  correnteTotal.textContent = fmtA(total);
+  correnteComFator.textContent = fmtA(totalFator);
+
+  const ordenadas = [...fontes].sort((a,b) => num(a.corrente) - num(b.corrente));
+  const recomendada = ordenadas.find(f => num(f.corrente) >= totalFator);
+
+  if(recomendada){
+    fonteRecomendada.textContent = `${recomendada.descricao} (${fmtA(recomendada.corrente)})`;
+    fontesAcima.innerHTML = ordenadas.filter(f => num(f.corrente) >= totalFator)
+      .map(f => `<span class="pill">${f.descricao} • ${fmtA(f.corrente)}</span>`).join("");
+  } else {
+    fonteRecomendada.textContent = "Não encontrada";
+    fontesAcima.textContent = "Nenhuma fonte cadastrada atende ao valor calculado.";
+  }
+
+  msg(status, operador.value.trim() ? `Cálculo realizado por ${operador.value.trim()}.` : "Cálculo realizado.");
+}
+
+function abrirSenha(){ modalSenha.classList.add("show"); }
+function fecharSenha(){ modalSenha.classList.remove("show"); }
+function fecharAdmin(){ modalAdmin.classList.remove("show"); }
+
+document.getElementById("btnAdmin").onclick = () => adminLogado ? modalAdmin.classList.add("show") : abrirSenha();
+document.getElementById("btnFecharSenha").onclick = fecharSenha;
+document.getElementById("btnCancelarSenha").onclick = fecharSenha;
+document.getElementById("btnEntrarAdmin").onclick = () => {
+  const s = document.getElementById("senhaAdmin").value;
+  if(s === senhaAdmin){
+    adminLogado = true;
+    document.getElementById("senhaAdmin").value = "";
+    msg(document.getElementById("statusSenha"), "Senha correta.");
+    fecharSenha();
+    modalAdmin.classList.add("show");
+  } else {
+    msg(document.getElementById("statusSenha"), "Senha incorreta.", false);
+  }
+};
+
+document.getElementById("btnSairAdmin").onclick = () => { adminLogado = false; fecharAdmin(); };
+document.getElementById("btnTrocarSenha").onclick = () => modalTrocarSenha.classList.add("show");
+document.getElementById("btnFecharTrocarSenha").onclick = () => modalTrocarSenha.classList.remove("show");
+document.getElementById("btnCancelarNovaSenha").onclick = () => modalTrocarSenha.classList.remove("show");
+document.getElementById("btnSalvarNovaSenha").onclick = () => {
+  const atual = document.getElementById("senhaAtual").value;
+  const nova = document.getElementById("novaSenha").value.trim();
+  if(atual !== senhaAdmin){
+    msg(document.getElementById("statusTrocaSenha"), "Senha atual incorreta.", false);
+    return;
+  }
+  if(nova.length < 3){
+    msg(document.getElementById("statusTrocaSenha"), "A nova senha deve ter pelo menos 3 caracteres.", false);
+    return;
+  }
+  senhaAdmin = nova;
+  localStorage.setItem(K_SENHA, senhaAdmin);
+  document.getElementById("senhaAtual").value = "";
+  document.getElementById("novaSenha").value = "";
+  msg(document.getElementById("statusTrocaSenha"), "Senha alterada com sucesso.");
+};
+
+document.getElementById("tabCargas").onclick = () => {
+  document.getElementById("tabCargas").classList.add("active");
+  document.getElementById("tabFontes").classList.remove("active");
+  document.getElementById("painelCargas").classList.remove("hidden");
+  document.getElementById("painelFontes").classList.add("hidden");
+};
+document.getElementById("tabFontes").onclick = () => {
+  document.getElementById("tabFontes").classList.add("active");
+  document.getElementById("tabCargas").classList.remove("active");
+  document.getElementById("painelFontes").classList.remove("hidden");
+  document.getElementById("painelCargas").classList.add("hidden");
+};
+
+function limparFormCarga(){ ["cDescricao","cMarca","cTensao","cCorrente","cPotencia","cIdEdit"].forEach(id => document.getElementById(id).value = ""); }
+function limparFormFonte(){ ["fDescricao","fMarca","fCorrente","fIdEdit"].forEach(id => document.getElementById(id).value = ""); }
+
+document.getElementById("btnLimparCarga").onclick = limparFormCarga;
+document.getElementById("btnLimparFonte").onclick = limparFormFonte;
+
+document.getElementById("btnSalvarCarga").onclick = () => {
+  const idEdit = document.getElementById("cIdEdit").value;
+  const descricao = document.getElementById("cDescricao").value.trim();
+  const marca = document.getElementById("cMarca").value.trim();
+  const tensao = num(document.getElementById("cTensao").value);
+  let corrente = num(document.getElementById("cCorrente").value);
+  const potencia = num(document.getElementById("cPotencia").value);
+
+  if(!descricao){
+    msg(status, "Informe a descrição da carga.", false);
+    return;
+  }
+  if(corrente <= 0){
+    if(potencia > 0 && tensao > 0){
+      corrente = potencia / tensao;
+    } else {
+      msg(status, "Informe a corrente ou preencha potência e tensão.", false);
+      return;
     }
+  }
 
-    function bind(){
-      document.getElementById("btnAdicionarCarga").addEventListener("click", adicionarCargaSelecionada);
-      document.getElementById("btnCalcular").addEventListener("click", calcularFonte);
-      document.getElementById("btnLimparSelecao").addEventListener("click", limparSelecao);
-      document.getElementById("btnAbrirAdmin").addEventListener("click", () => refs.modalSenha.classList.add("show"));
-      document.getElementById("btnFecharSenha").addEventListener("click", () => refs.modalSenha.classList.remove("show"));
-      document.getElementById("btnEntrarAdmin").addEventListener("click", validarSenhaAdmin);
-      document.getElementById("btnFecharAdmin").addEventListener("click", () => refs.modalAdmin.classList.remove("show"));
-      document.querySelectorAll(".tabs button").forEach(btn => btn.addEventListener("click", () => trocarTab(btn.dataset.tab, btn)));
-      document.getElementById("btnSalvarCarga").addEventListener("click", salvarCarga);
-      document.getElementById("btnLimparCarga").addEventListener("click", limparFormularioCarga);
-      document.getElementById("btnSalvarFonte").addEventListener("click", salvarFonte);
-      document.getElementById("btnLimparFonte").addEventListener("click", limparFormularioFonte);
-      document.getElementById("btnAlterarSenha").addEventListener("click", alterarSenha);
-      document.getElementById("btnExportarBackup").addEventListener("click", exportarBackup);
-      document.getElementById("btnImportarBackup").addEventListener("click", () => refs.inputBackup.click());
-      refs.inputBackup.addEventListener("change", importarBackup);
-      refs.fatorCustom.addEventListener("input", () => {
-        const v = parseFloat(refs.fatorCustom.value);
-        if(!isNaN(v) && v > 0){
-          activeFactor = v;
-          document.querySelectorAll("#factorButtons button").forEach(b => b.classList.remove("active"));
-        }
-      });
-      document.querySelectorAll("#factorButtons button").forEach(btn => {
-        btn.addEventListener("click", () => {
-          activeFactor = parseFloat(btn.dataset.factor);
-          refs.fatorCustom.value = "";
-          document.querySelectorAll("#factorButtons button").forEach(b => b.classList.remove("active"));
-          btn.classList.add("active");
-        });
-      });
-    }
+  const registro = {id: idEdit || crypto.randomUUID(), descricao, marca, tensao, corrente, potencia};
 
-    function garantirDefaults(){
-      if(!Array.isArray(state.cargas) || state.cargas.length === 0){
-        state.cargas = [
-          { id: crypto.randomUUID(), descricao:"CLP", marca:"Padrão", tensao:24, corrente:1.20, potencia:0 },
-          { id: crypto.randomUUID(), descricao:"Sensor indutivo", marca:"Padrão", tensao:24, corrente:0.05, potencia:0 },
-          { id: crypto.randomUUID(), descricao:"Câmera", marca:"Padrão", tensao:12, corrente:1.00, potencia:0 }
-        ];
-      }
-      if(!Array.isArray(state.fontes) || state.fontes.length === 0){
-        state.fontes = [
-          { id: crypto.randomUUID(), descricao:"Fonte 24V 5A", marca:"Padrão", corrente:5 },
-          { id: crypto.randomUUID(), descricao:"Fonte 24V 10A", marca:"Padrão", corrente:10 },
-          { id: crypto.randomUUID(), descricao:"Fonte 24V 20A", marca:"Padrão", corrente:20 }
-        ];
-      }
-      if(!state.adminPassword) state.adminPassword = "1234";
-      salvarState();
-    }
+  if(idEdit){
+    const i = cargas.findIndex(x => x.id === idEdit);
+    if(i !== -1) cargas[i] = registro;
+    msg(status, "Carga atualizada.");
+  } else {
+    cargas.push(registro);
+    msg(status, "Carga cadastrada.");
+  }
+  salvar(K_CARGAS, cargas);
+  limparFormCarga();
+  preencherSelectCargas();
+  renderCargas();
+};
 
-    function validarSenhaAdmin(){
-      refs.statusSenha.textContent = refs.senhaAdmin.value === state.adminPassword ? "" : "Senha inválida.";
-      if(refs.senhaAdmin.value === state.adminPassword){
-        refs.modalSenha.classList.remove("show");
-        refs.modalAdmin.classList.add("show");
-        refs.senhaAdmin.value = "";
-      }
-    }
+function editarCarga(id){
+  const c = cargas.find(x => x.id === id);
+  if(!c) return;
+  document.getElementById("cDescricao").value = c.descricao;
+  document.getElementById("cMarca").value = c.marca;
+  document.getElementById("cTensao").value = c.tensao || "";
+  document.getElementById("cCorrente").value = c.corrente || "";
+  document.getElementById("cPotencia").value = c.potencia || "";
+  document.getElementById("cIdEdit").value = c.id;
+}
+function excluirCarga(id){
+  if(!confirm("Excluir esta carga?")) return;
+  cargas = cargas.filter(x => x.id !== id);
+  salvar(K_CARGAS, cargas);
+  preencherSelectCargas();
+  renderCargas();
+  selecionadas = selecionadas.filter(x => x.cargaId !== id);
+  salvar(K_SELECIONADAS, selecionadas);
+  renderSelecionadas();
+}
+window.editarCarga = editarCarga;
+window.excluirCarga = excluirCarga;
 
-    function trocarTab(tabId, botao){
-      document.querySelectorAll(".tabs button").forEach(b => { b.classList.remove("active"); b.classList.add("btn-dark"); });
-      botao.classList.add("active"); botao.classList.remove("btn-dark");
-      ["tabCargas","tabFontes","tabSenha"].forEach(id => document.getElementById(id).classList.add("hidden"));
-      document.getElementById(tabId).classList.remove("hidden");
-    }
+document.getElementById("btnSalvarFonte").onclick = () => {
+  const idEdit = document.getElementById("fIdEdit").value;
+  const descricao = document.getElementById("fDescricao").value.trim();
+  const marca = document.getElementById("fMarca").value.trim();
+  const corrente = num(document.getElementById("fCorrente").value);
 
-    function calcularCorrenteCarga(carga){
-      const corrente = Number(carga.corrente) || 0;
-      if(corrente > 0) return corrente;
-      const potencia = Number(carga.potencia) || 0;
-      const tensao = Number(carga.tensao) || 0;
-      return potencia > 0 && tensao > 0 ? potencia / tensao : 0;
-    }
+  if(!descricao || corrente <= 0){
+    msg(status, "Informe descrição e corrente da fonte.", false);
+    return;
+  }
 
-    function adicionarCargaSelecionada(){
-      const carga = state.cargas.find(c => c.id === refs.cargaSelect.value);
-      const qtd = Math.max(1, parseInt(refs.quantidadeCarga.value || "1", 10));
-      if(!carga) return refs.statusCalc.textContent = "Selecione uma carga válida.";
-      const corrente = calcularCorrenteCarga(carga);
-      if(corrente <= 0) return refs.statusCalc.textContent = "Essa carga não possui corrente calculável.";
-      const existente = selectedLoads.find(i => i.id === carga.id);
-      if(existente) existente.quantidade += qtd;
-      else selectedLoads.push({ id:carga.id, descricao:carga.descricao, marca:carga.marca, corrente, quantidade:qtd });
-      refs.quantidadeCarga.value = "1";
-      refs.statusCalc.textContent = "Carga adicionada.";
-      renderSelectedLoads();
-    }
+  const registro = {id: idEdit || crypto.randomUUID(), descricao, marca, corrente};
 
-    function renderSelectedLoads(){
-      refs.listaSelecionadas.innerHTML = selectedLoads.length ? selectedLoads.map(item => {
-        const total = item.corrente * item.quantidade;
-        return `<div class="item"><div class="item-top"><div><h3>${item.descricao}</h3><p>${item.marca || "Sem marca"} • ${formatarNumero(item.corrente)} A por unidade</p><p><strong>Total:</strong> ${formatarNumero(total)} A</p></div><span class="tag">${item.quantidade} un.</span></div><div class="item-actions"><input type="number" min="1" step="1" value="${item.quantidade}" onchange="alterarQuantidadeSelecionada('${item.id}', this.value)"><button class="btn-danger" onclick="removerCargaSelecionada('${item.id}')">Remover</button></div></div>`;
-      }).join("") : '<div class="item"><p>Nenhuma carga selecionada.</p></div>';
-    }
+  if(idEdit){
+    const i = fontes.findIndex(x => x.id === idEdit);
+    if(i !== -1) fontes[i] = registro;
+    msg(status, "Fonte atualizada.");
+  } else {
+    fontes.push(registro);
+    msg(status, "Fonte cadastrada.");
+  }
+  salvar(K_FONTES, fontes);
+  limparFormFonte();
+  renderFontes();
+};
 
-    function calcularFonte(){
-      const total = selectedLoads.reduce((s, item) => s + (item.corrente * item.quantidade), 0);
-      const totalFator = total * (activeFactor || 1);
-      const recomendada = [...state.fontes].sort((a,b) => Number(a.corrente)-Number(b.corrente)).find(f => Number(f.corrente) >= totalFator) || null;
-      atualizarResumo(total, totalFator, recomendada);
-      refs.statusCalc.textContent = recomendada ? "Fonte encontrada com sucesso." : "Nenhuma fonte cadastrada atende esse valor.";
-    }
+function editarFonte(id){
+  const f = fontes.find(x => x.id === id);
+  if(!f) return;
+  document.getElementById("fDescricao").value = f.descricao;
+  document.getElementById("fMarca").value = f.marca;
+  document.getElementById("fCorrente").value = f.corrente;
+  document.getElementById("fIdEdit").value = f.id;
+}
+function excluirFonte(id){
+  if(!confirm("Excluir esta fonte?")) return;
+  fontes = fontes.filter(x => x.id !== id);
+  salvar(K_FONTES, fontes);
+  renderFontes();
+}
+window.editarFonte = editarFonte;
+window.excluirFonte = excluirFonte;
 
-    function atualizarResumo(total, totalFator, recomendada){
-      refs.correnteTotal.textContent = `${formatarNumero(total)} A`;
-      refs.correnteFator.textContent = `${formatarNumero(totalFator)} A`;
-      if(recomendada){
-        refs.fonteRecomendada.textContent = `${formatarNumero(recomendada.corrente)} A`;
-        refs.detalheFonte.textContent = `${recomendada.descricao} • ${recomendada.marca || "Sem marca"}`;
-      } else {
-        refs.fonteRecomendada.textContent = "—";
-        refs.detalheFonte.textContent = "Nenhuma fonte recomendada no momento.";
-      }
-    }
+document.getElementById("btnAddCarga").onclick = adicionarCargaSelecionada;
+document.getElementById("btnCalcular").onclick = calcularFonte;
 
-    function limparSelecao(){ selectedLoads = []; renderSelectedLoads(); atualizarResumo(0,0,null); refs.statusCalc.textContent = "Seleção limpa."; }
+preencherSelectCargas();
+renderSelecionadas();
+renderCargas();
+renderFontes();
 
-    function salvarCarga(){
-      const descricao = refs.cargaDescricao.value.trim(), marca = refs.cargaMarca.value.trim(), tensao = Number(refs.cargaTensao.value)||0, corrente = Number(refs.cargaCorrente.value)||0, potencia = Number(refs.cargaPotencia.value)||0;
-      if(!descricao) return refs.statusCarga.textContent = "Informe a descrição da carga.";
-      if(corrente <= 0 && !(potencia > 0 && tensao > 0)) return refs.statusCarga.textContent = "Informe a corrente ou potência + tensão.";
-      const item = { id: editingCargaId || crypto.randomUUID(), descricao, marca, tensao, corrente, potencia };
-      if(editingCargaId){ const idx = state.cargas.findIndex(c => c.id === editingCargaId); if(idx !== -1) state.cargas[idx] = item; refs.statusCarga.textContent = "Carga atualizada."; }
-      else { state.cargas.push(item); refs.statusCarga.textContent = "Carga cadastrada."; }
-      salvarState(); preencherSelectCargas(); renderAdminLoads(); limparFormularioCarga();
-    }
-
-    function renderAdminLoads(){
-      refs.listaCargasAdmin.innerHTML = state.cargas.length ? state.cargas.map(c => {
-        const corrente = calcularCorrenteCarga(c);
-        return `<div class="item"><div class="item-top"><div><h3>${c.descricao}</h3><p>${c.marca || "Sem marca"} • ${formatarNumero(c.tensao || 0)} V • ${formatarNumero(corrente)} A</p><p>Potência: ${formatarNumero(c.potencia || 0)} W</p></div></div><div class="item-actions"><button class="btn-blue" onclick="editarCarga('${c.id}')">Editar</button><button class="btn-danger" onclick="excluirCarga('${c.id}')">Excluir</button></div></div>`;
-      }).join("") : '<div class="item"><p>Nenhuma carga cadastrada.</p></div>';
-    }
-
-    function editarCarga(id){
-      const c = state.cargas.find(x => x.id === id); if(!c) return;
-      editingCargaId = id; refs.cargaDescricao.value = c.descricao || ""; refs.cargaMarca.value = c.marca || ""; refs.cargaTensao.value = c.tensao || ""; refs.cargaCorrente.value = c.corrente || ""; refs.cargaPotencia.value = c.potencia || ""; refs.statusCarga.textContent = "Editando carga.";
-    }
-
-    function excluirCarga(id){ state.cargas = state.cargas.filter(c => c.id !== id); selectedLoads = selectedLoads.filter(c => c.id !== id); salvarState(); preencherSelectCargas(); renderAdminLoads(); renderSelectedLoads(); refs.statusCarga.textContent = "Carga excluída."; }
-    function limparFormularioCarga(){ editingCargaId = null; refs.cargaDescricao.value = ""; refs.cargaMarca.value = ""; refs.cargaTensao.value = ""; refs.cargaCorrente.value = ""; refs.cargaPotencia.value = ""; }
-
-    function salvarFonte(){
-      const descricao = refs.fonteDescricao.value.trim(), marca = refs.fonteMarca.value.trim(), corrente = Number(refs.fonteCorrente.value) || 0;
-      if(!descricao || corrente <= 0) return refs.statusFonte.textContent = "Informe descrição e corrente da fonte.";
-      const item = { id: editingFonteId || crypto.randomUUID(), descricao, marca, corrente };
-      if(editingFonteId){ const idx = state.fontes.findIndex(f => f.id === editingFonteId); if(idx !== -1) state.fontes[idx] = item; refs.statusFonte.textContent = "Fonte atualizada."; }
-      else { state.fontes.push(item); refs.statusFonte.textContent = "Fonte cadastrada."; }
-      salvarState(); renderAdminSources(); limparFormularioFonte();
-    }
-
-    function renderAdminSources(){
-      refs.listaFontesAdmin.innerHTML = state.fontes.length ? [...state.fontes].sort((a,b) => Number(a.corrente)-Number(b.corrente)).map(f => `<div class="item"><div class="item-top"><div><h3>${f.descricao}</h3><p>${f.marca || "Sem marca"} • ${formatarNumero(f.corrente)} A</p></div></div><div class="item-actions"><button class="btn-blue" onclick="editarFonte('${f.id}')">Editar</button><button class="btn-danger" onclick="excluirFonte('${f.id}')">Excluir</button></div></div>`).join("") : '<div class="item"><p>Nenhuma fonte cadastrada.</p></div>';
-    }
-
-    function editarFonte(id){ const f = state.fontes.find(x => x.id === id); if(!f) return; editingFonteId = id; refs.fonteDescricao.value = f.descricao || ""; refs.fonteMarca.value = f.marca || ""; refs.fonteCorrente.value = f.corrente || ""; refs.statusFonte.textContent = "Editando fonte."; }
-    function excluirFonte(id){ state.fontes = state.fontes.filter(f => f.id !== id); salvarState(); renderAdminSources(); refs.statusFonte.textContent = "Fonte excluída."; }
-    function limparFormularioFonte(){ editingFonteId = null; refs.fonteDescricao.value = ""; refs.fonteMarca.value = ""; refs.fonteCorrente.value = ""; }
-
-    function alterarSenha(){
-      const atual = refs.senhaAtual.value, nova = refs.novaSenha.value.trim();
-      if(atual !== state.adminPassword) return refs.statusConfig.textContent = "Senha atual inválida.";
-      if(nova.length < 4) return refs.statusConfig.textContent = "A nova senha deve ter pelo menos 4 caracteres.";
-      state.adminPassword = nova; salvarState(); refs.senhaAtual.value = ""; refs.novaSenha.value = ""; refs.statusConfig.textContent = "Senha alterada com sucesso.";
-    }
-
-    function preencherSelectCargas(){
-      refs.cargaSelect.innerHTML = state.cargas.map(c => `<option value="${c.id}">${c.descricao} • ${formatarNumero(calcularCorrenteCarga(c))} A</option>`).join("");
-    }
-
-    function exportarBackup(){
-      const payload = { app: "Dimensionador de Fonte", versao: 1, exportadoEm: new Date().toISOString(), state };
-      const blob = new Blob([JSON.stringify(payload, null, 2)], { type:"application/json;charset=utf-8" });
-      const url = URL.createObjectURL(blob), a = document.createElement("a");
-      a.href = url; a.download = `backup_dimensionador_fonte_${hojeISO()}.json`; document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 2000); refs.statusCalc.textContent = "Backup exportado com sucesso.";
-    }
-
-    async function importarBackup(event){
-      const arquivo = event.target.files?.[0]; if(!arquivo) return;
-      try{
-        const payload = JSON.parse(await arquivo.text()); if(!payload || !payload.state) throw new Error("inválido");
-        const substituir = confirm("Deseja substituir os dados atuais pelo backup importado?\n\nOK = substituir tudo\nCancelar = mesclar com os dados atuais");
-        if(substituir) state = payload.state;
-        else {
-          state.cargas = [...(state.cargas || []), ...((payload.state.cargas) || [])];
-          state.fontes = [...(state.fontes || []), ...((payload.state.fontes) || [])];
-          if(payload.state.adminPassword && !state.adminPassword) state.adminPassword = payload.state.adminPassword;
-        }
-        salvarState(); preencherSelectCargas(); renderAdminLoads(); renderAdminSources(); renderSelectedLoads(); refs.statusCalc.textContent = "Backup importado com sucesso.";
-      } catch (e){ refs.statusCalc.textContent = "Não foi possível importar o backup."; }
-      finally { event.target.value = ""; }
-    }
-
-    function carregarState(){ try{ const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : { cargas:[], fontes:[], adminPassword:"1234" }; } catch { return { cargas:[], fontes:[], adminPassword:"1234" }; } }
-    function salvarState(){ const payload = JSON.stringify(state); localStorage.setItem(STORAGE_KEY, payload); localStorage.setItem(BACKUP_KEY, payload); localStorage.setItem(LAST_BACKUP_KEY, new Date().toISOString()); }
-    function formatarNumero(v){ return Number(v || 0).toLocaleString("pt-BR", { minimumFractionDigits:2, maximumFractionDigits:3 }); }
-    function hojeISO(){ const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
-
-    window.alterarQuantidadeSelecionada = (id, qtd) => { const item = selectedLoads.find(x => x.id === id); if(item){ item.quantidade = Math.max(1, parseInt(qtd || "1", 10)); renderSelectedLoads(); } };
-    window.removerCargaSelecionada = id => { selectedLoads = selectedLoads.filter(x => x.id !== id); renderSelectedLoads(); };
-    window.editarCarga = editarCarga; window.excluirCarga = excluirCarga; window.editarFonte = editarFonte; window.excluirFonte = excluirFonte;
-
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(() => {}));
-    }
-
-    iniciar();
-  </script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+  });
+}
+</script>
 </body>
 </html>
